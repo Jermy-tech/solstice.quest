@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solstice SMP - Minecraft Server</title>
+    <style>
+        :root {
+            --primary: #7289da;
+            --secondary: #2c2f33;
+            --dark: #23272a;
+            --light: #ffffff;
+            --accent: #ff7e2e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: rgba(35, 39, 42, 0.8);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 50px;
+            margin-right: 10px;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--light);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+        
+        .hamburger {
+            display: none;
+            cursor: pointer;
+        }
+        
+        .hamburger div {
+            width: 25px;
+            height: 3px;
+            background-color: var(--light);
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://cdn.discordapp.com/attachments/1350260597756788736/1363688671739379882/ChatGPT_Image_Apr_10_2025_09_33_14_PM.png?ex=68079a4b&is=680648cb&hm=514b9e40a4c62a0108dfec056509c08a5bd5dfb60110b455a8b25292f84f89d4&');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            z-index: 1;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background-color: var(--accent);
+            color: var(--light);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            margin: 0.5rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            border: 2px solid var(--light);
+        }
+
+        .server-status {
+            margin: 2rem 0;
+        }
+        
+        .section {
+            padding: 5rem 0;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            background-color: var(--accent);
+            bottom: -10px;
+            left: 25%;
+        }
+        
+        .features {
+            background-color: var(--secondary);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background-color: var(--dark);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+        
+        .join-steps {
+            background-color: var(--dark);
+        }
+        
+        .step-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .step {
+            background-color: var(--secondary);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .step-number {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .step h3 {
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+        
+        .step-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .game-modes {
+            background-color: var(--secondary);
+        }
+        
+        .modes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .mode-card {
+            background-color: var(--dark);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .mode-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .mode-img {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .mode-content {
+            padding: 1.5rem;
+        }
+        
+        .mode-content h3 {
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+        
+        footer {
+            background-color: var(--dark);
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-logo img {
+            height: 60px;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .footer-links a {
+            color: var(--light);
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-links a {
+            color: var(--light);
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            color: var(--accent);
+        }
+        
+        .copyright {
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 2rem;
+        }
+        
+        /* Copy button styles */
+        .copy-btn {
+            background: var(--accent);
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+        
+        .server-ip {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            margin: 1rem 0;
+        }
+        
+        /* Animation Effects */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate {
+            animation: fadeIn 0.8s ease forwards;
+        }
+        
+        /* Media Queries */
+        @media screen and (max-width: 768px) {
+            .navbar {
+                padding: 0 1rem;
+            }
+            
+            .nav-links {
+                position: absolute;
+                right: 0;
+                top: 70px;
+                background-color: var(--secondary);
+                flex-direction: column;
+                width: 100%;
+                text-align: center;
+                transform: translateX(100%);
+                transition: transform 0.5s ease-in;
+                padding: 2rem 0;
+            }
+            
+            .nav-links li {
+                margin: 1rem 0;
+            }
+            
+            .hamburger {
+                display: block;
+            }
+            
+            .nav-active {
+                transform: translateX(0%);
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .feature-card, .mode-card {
+                margin-bottom: 2rem;
+            }
+            
+            .step-number {
+                position: static;
+                margin: 0 auto 1rem;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .footer-logo, .footer-links, .social-links {
+                margin-bottom: 1.5rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <img src="https://cdn.discordapp.com/attachments/1350260597756788736/1363688671739379882/ChatGPT_Image_Apr_10_2025_09_33_14_PM.png?ex=68079a4b&is=680648cb&hm=514b9e40a4c62a0108dfec056509c08a5bd5dfb60110b455a8b25292f84f89d4&" alt="Solstice SMP Logo">
+                    <h1>Solstice SMP</h1>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#join">How to Join</a></li>
+                    <li><a href="#gamemodes">Game Modes</a></li>
+                    <li><a href="https://discord.gg/gJsW4gdc76" target="_blank">Discord</a></li>
+                </ul>
+                <div class="hamburger">
+                    <div class="line1"></div>
+                    <div class="line2"></div>
+                    <div class="line3"></div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Welcome to Solstice SMP</h1>
+            <p>A vanilla-friendly Minecraft server running on PaperMC with multiple game modes!</p>
+            <div class="server-status">
+                <a href="https://minecraftservers.org/server/672921" target="_blank"><img src="https://status.minecraftservers.org/classic/672921.png" alt="Solstice SMP Minecraft server"></a>
+            </div>
+            <div class="server-ip">
+                <span>play.solstice.quest</span>
+                <button class="copy-btn" onclick="copyToClipboard('play.solstice.quest')">Copy IP</button>
+            </div>
+            <a href="#join" class="btn btn-primary">How to Join</a>
+            <a href="https://discord.gg/gJsW4gdc76" class="btn btn-secondary" target="_blank">Join our Discord</a>
+        </div>
+    </section>
+
+    <section id="features" class="section features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Server Features</h2>
+                <p>Discover what makes Solstice SMP special</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <h3>Vanilla-Friendly</h3>
+                    <p>Experience Minecraft as it was meant to be, with subtle enhancements for better gameplay</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-microphone"></i>
+                    </div>
+                    <h3>Proximity Voice Chat</h3>
+                    <p>Talk with nearby players using our integrated voice chat system</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <h3>Multiple Game Modes</h3>
+                    <p>From survival to minigames, there's something for everyone to enjoy</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Active Community</h3>
+                    <p>Join our friendly community of Minecraft enthusiasts</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Anti-Cheat Protection</h3>
+                    <p>Fair gameplay guaranteed with our advanced anti-cheat systems</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Optimized Performance</h3>
+                    <p>Enjoy smooth gameplay with minimal lag on our high-performance servers</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="join" class="section join-steps">
+        <div class="container">
+            <div class="section-header">
+                <h2>How to Join</h2>
+                <p>Follow these simple steps to join Solstice SMP</p>
+            </div>
+            <div class="step-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Install Minecraft</h3>
+                    <div class="step-content">
+                        <div>
+                            <h4>Option 1: Official Minecraft (Recommended)</h4>
+                            <ol>
+                                <li>Go to minecraft.net and purchase Minecraft Java Edition</li>
+                                <li>Download the Minecraft Launcher and install it</li>
+                                <li>Launch the game, log in, and proceed to Step 2</li>
+                            </ol>
+                        </div>
+                        <div>
+                            <h4>Option 2: TLauncher (Alternative Free Option)</h4>
+                            <ol>
+                                <li>Download TLauncher from tlauncher.org</li>
+                                <li>Install TLauncher and open it</li>
+                                <li>Click Accounts > Manage Accounts > Create an Account and enter your username</li>
+                                <li>Select Minecraft Version 1.21.4, then click Install & Play</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Connect to the Server</h3>
+                    <div class="step-content">
+                        <div>
+                            <h4>Java Edition:</h4>
+                            <p>IP: <code>play.solstice.quest</code></p>
+                        </div>
+                        <div>
+                            <h4>Bedrock Edition:</h4>
+                            <p>IP: <code>nil</code></p>
+                            <p>Port: <code>1825</code></p>
+                        </div>
+                        <ol>
+                            <li>Open Minecraft (or TLauncher)</li>
+                            <li>Click Multiplayer > Add Server</li>
+                            <li>Enter the IP and click Done</li>
+                            <li>Join the server and start your adventure!</li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>(Optional) Enable Proximity Voice Chat</h3>
+                    <div class="step-content">
+                        <p>Want to talk with nearby players? Install Simple Voice Chat mod for PaperMC:</p>
+                        <a href="https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat" class="btn btn-primary" target="_blank">Download Here</a>
+                        
+                        <h4>How to Install the Plugin (Client-Side)</h4>
+                        <ol>
+                            <li>Download the .jar file from the link above</li>
+                            <li>Install Fabric or Forge (TLauncher users can do this in the settings)</li>
+                            <li>Place the .jar file in your Minecraft mods folder:</li>
+                            <li><strong>Windows:</strong> Press Win + R, type %appdata%, and navigate to .minecraft/mods/</li>
+                            <li><strong>Mac:</strong> Open ~/Library/Application Support/minecraft/mods/</li>
+                            <li><strong>Linux:</strong> Go to ~/.minecraft/mods/</li>
+                            <li>Launch the game using Fabric/Forge</li>
+                            <li>Once in-game, press V to configure your voice settings</li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Enjoy the Server!</h3>
+                    <div class="step-content">
+                        <p>If you have any issues, ask for help in #support channel on our Discord.</p>
+                        <a href="https://discord.gg/gJsW4gdc76" class="btn btn-primary" target="_blank">Join Discord</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="gamemodes" class="section game-modes">
+        <div class="container">
+            <div class="section-header">
+                <h2>Game Modes</h2>
+                <p>Explore the various game modes available on Solstice SMP</p>
+            </div>
+            <div class="modes-grid">
+                <div class="mode-card">
+                    <div class="mode-img" style="background-image: url('/api/placeholder/400/320');"></div>
+                    <div class="mode-content">
+                        <h3>Survival (SMP)</h3>
+                        <p>Our flagship vanilla-friendly survival experience. Build, explore, and thrive in a community-driven world.</p>
+                    </div>
+                </div>
+                <div class="mode-card">
+                    <div class="mode-img" style="background-image: url('/api/placeholder/400/320');"></div>
+                    <div class="mode-content">
+                        <h3>SkyBlock</h3>
+                        <p>Start with a small island in the sky and expand your territory through resource gathering and smart management.</p>
+                    </div>
+                </div>
+                <div class="mode-card">
+                    <div class="mode-img" style="background-image: url('/api/placeholder/400/320');"></div>
+                    <div class="mode-content">
+                        <h3>SkyWars</h3>
+                        <p>Battle against other players on floating islands. Gather resources, gear up, and be the last one standing!</p>
+                    </div>
+                </div>
+                <div class="mode-card">
+                    <div class="mode-img" style="background-image: url('/api/placeholder/400/320');"></div>
+                    <div class="mode-content">
+                        <h3>Survival Games</h3>
+                        <p>Compete in Hunger Games-style matches where strategy and combat skills determine the victor.</p>
+                    </div>
+                </div>
+                <div class="mode-card">
+                    <div class="mode-img" style="background-image: url('/api/placeholder/400/320');"></div>
+                    <div class="mode-content">
+                        <h3>Duels</h3>
+                        <p>Test your PvP skills in one-on-one combat arenas with various weapon loadouts and arenas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="https://cdn.discordapp.com/attachments/1350260597756788736/1363688671739379882/ChatGPT_Image_Apr_10_2025_09_33_14_PM.png?ex=68079a4b&is=680648cb&hm=514b9e40a4c62a0108dfec056509c08a5bd5dfb60110b455a8b25292f84f89d4&" alt="Solstice SMP Logo">
+                    <p>Solstice SMP - A Minecraft Community</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <a href="#home">Home</a>
+                    <a href="#features">Features</a>
+                    <a href="#join">How to Join</a>
+                    <a href="#gamemodes">Game Modes</a>
+                </div>
+                <div class="footer-links">
+                    <h3>Connect</h3>
+                    <a href="https://discord.gg/gJsW4gdc76" target="_blank">Discord</a>
+                    <a href="https://minecraftservers.org/server/672921" target="_blank">Server Listing</a>
+                </div>
+                <div class="social-links">
+                    <a href="https://discord.gg/gJsW4gdc76" target="_blank"><i class="fab fa-discord"></i></a>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Solstice SMP. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Nav Toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('nav-active');
+            
+            // Hamburger Animation
+            hamburger.classList.toggle('toggle');
+        });
+        
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                window.scrollTo({
+                    top: targetElement.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+                
+                // Close mobile nav if open
+                navLinks.classList.remove('nav-active');
+            });
+        });
+        
+        // Animation on Scroll
+        const animateOnScroll = () => {
+            const elements = document.querySelectorAll('.feature-card, .step, .mode-card, .section-header');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.3;
+                
+                if (elementPosition < screenPosition) {
+                    element.classList.add('animate');
+                }
+            });
+        };
+        
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('load', animateOnScroll);
+        
+        // Copy IP to clipboard
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const copyBtn = document.querySelector('.copy-btn');
+                copyBtn.textContent = 'Copied!';
+                
+                setTimeout(() => {
+                    copyBtn.textContent = 'Copy IP';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
