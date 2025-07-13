@@ -3,752 +3,825 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solstice SMP - Minecraft Server</title>
+    <title>Solstice SMP - Sun & Moon Aligned</title>
     <style>
-        :root {
-            --primary: #7289da;
-            --secondary: #2c2f33;
-            --dark: #23272a;
-            --light: #ffffff;
-            --accent: #ff7e2e;
-        }
-        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
         }
-        
+
         body {
-            background-color: var(--dark);
-            color: var(--light);
-            line-height: 1.6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
-        
-        header {
-            background-color: rgba(35, 39, 42, 0.8);
-            backdrop-filter: blur(10px);
+
+        .stars {
             position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            z-index: 1000;
-            padding: 1rem 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
         }
-        
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .blood-moon {
+            position: fixed;
+            top: 10%;
+            right: 10%;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, #ff4444 0%, #cc0000 70%, #660000 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 50px #ff4444, 0 0 100px rgba(255, 68, 68, 0.3);
+            animation: moonGlow 4s ease-in-out infinite alternate;
+            z-index: 2;
+        }
+
+        @keyframes moonGlow {
+            0% { box-shadow: 0 0 50px #ff4444, 0 0 100px rgba(255, 68, 68, 0.3); }
+            100% { box-shadow: 0 0 80px #ff4444, 0 0 150px rgba(255, 68, 68, 0.5); }
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 2rem;
-        }
-        
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-        }
-        
-        .logo img {
-            height: 50px;
-            margin-right: 10px;
-        }
-        
-        .logo h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--light);
-        }
-        
-        .nav-links {
-            display: flex;
-            list-style: none;
-        }
-        
-        .nav-links li {
-            margin-left: 2rem;
-        }
-        
-        .nav-links a {
-            color: var(--light);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-        
-        .nav-links a:hover {
-            color: var(--accent);
-        }
-        
-        .hamburger {
-            display: none;
-            cursor: pointer;
-        }
-        
-        .hamburger div {
-            width: 25px;
-            height: 3px;
-            background-color: var(--light);
-            margin: 5px;
-            transition: all 0.3s ease;
-        }
-        
-        .hero {
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://cdn.discordapp.com/attachments/1350260597756788736/1363688671739379882/ChatGPT_Image_Apr_10_2025_09_33_14_PM.png?ex=68079a4b&is=680648cb&hm=514b9e40a4c62a0108dfec056509c08a5bd5dfb60110b455a8b25292f84f89d4&');
-            background-size: cover;
-            background-position: center;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            text-align: center;
+            padding: 0 20px;
             position: relative;
-            overflow: hidden;
-        }
-        
-        .hero-content {
-            max-width: 800px;
-            margin: 0 auto;
-            z-index: 1;
-        }
-        
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-        }
-        
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-        }
-        
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 2rem;
-            background-color: var(--accent);
-            color: var(--light);
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            margin: 0.5rem;
-        }
-        
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-        
-        .btn-primary {
-            background-color: var(--primary);
-        }
-        
-        .btn-secondary {
-            background-color: transparent;
-            border: 2px solid var(--light);
+            z-index: 3;
         }
 
-        .server-status {
-            margin: 2rem 0;
-        }
-        
-        .section {
-            padding: 5rem 0;
-        }
-        
-        .section-header {
+        header {
             text-align: center;
-            margin-bottom: 3rem;
+            padding: 80px 0;
+            background: linear-gradient(45deg, rgba(255, 68, 68, 0.1), rgba(68, 153, 255, 0.1));
+            border-radius: 20px;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
-        .section-header h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ff4444, #4499ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255, 68, 68, 0.5);
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            0% { filter: brightness(1); }
+            100% { filter: brightness(1.2); }
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #cccccc;
+            margin-bottom: 30px;
+        }
+
+        .week-display {
+            background: linear-gradient(45deg, #1a1a2e, #16213e);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 2px solid rgba(255, 68, 68, 0.3);
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .current-week {
+            font-size: 2rem;
+            color: #ff4444;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
+        }
+
+        .countdown {
+            font-size: 1.5rem;
+            color: #4499ff;
+            font-weight: bold;
+        }
+
+        .admin-controls {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-controls h3 {
+            color: #ff4444;
+            margin-bottom: 15px;
+        }
+
+        .admin-controls button {
+            background: linear-gradient(45deg, #ff4444, #cc0000);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: bold;
+        }
+
+        .admin-controls button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 68, 68, 0.4);
+        }
+
+        .admin-controls input, .admin-controls select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px;
+            border-radius: 5px;
+            margin: 5px;
+        }
+
+        .section {
+            background: linear-gradient(135deg, rgba(255, 68, 68, 0.15), rgba(68, 153, 255, 0.15));
+            border-radius: 20px;
+            padding: 50px;
+            margin: 40px 0;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
             position: relative;
-            display: inline-block;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
         }
-        
-        .section-header h2::after {
+
+        .section::before {
             content: '';
             position: absolute;
-            width: 50%;
-            height: 3px;
-            background-color: var(--accent);
-            bottom: -10px;
-            left: 25%;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 68, 68, 0.15) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
         }
-        
-        .features {
-            background-color: var(--secondary);
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
-        
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-        
-        .feature-card {
-            background-color: var(--dark);
-            border-radius: 10px;
-            padding: 2rem;
-            text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-        
-        .feature-icon {
+
+        .section h2 {
             font-size: 3rem;
-            margin-bottom: 1rem;
-            color: var(--accent);
-        }
-        
-        .join-steps {
-            background-color: var(--dark);
-        }
-        
-        .step-container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .step {
-            background-color: var(--secondary);
-            border-radius: 10px;
-            padding: 2rem;
-            margin-bottom: 2rem;
+            margin-bottom: 30px;
+            color: #ff4444;
+            text-shadow: 0 0 30px rgba(255, 68, 68, 0.8);
+            text-align: center;
             position: relative;
         }
-        
-        .step-number {
+
+        .section h2::after {
+            content: '';
             position: absolute;
-            top: -20px;
-            left: -20px;
-            width: 50px;
-            height: 50px;
-            background-color: var(--accent);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5rem;
-            font-weight: 600;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(45deg, #ff4444, #4499ff);
+            border-radius: 2px;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
         }
-        
-        .step h3 {
-            margin-bottom: 1rem;
-            color: var(--accent);
+
+        .section.locked {
+            opacity: 0.3;
+            filter: blur(8px) brightness(0.3);
+            pointer-events: none;
+            position: relative;
         }
-        
-        .step-content {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
+
+        .section.locked::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, 
+                rgba(0, 0, 0, 0.9) 0%, 
+                rgba(255, 68, 68, 0.2) 25%, 
+                rgba(0, 0, 0, 0.9) 50%, 
+                rgba(68, 153, 255, 0.2) 75%, 
+                rgba(0, 0, 0, 0.9) 100%);
+            z-index: 5;
+            border-radius: 15px;
         }
-        
-        .game-modes {
-            background-color: var(--secondary);
+
+        .section.locked::after {
+            content: '🔒 LOCKED - COMING SOON';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2.5rem;
+            color: #ff4444;
+            text-shadow: 0 0 30px rgba(255, 68, 68, 1), 0 0 60px rgba(255, 68, 68, 0.8);
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px 40px;
+            border-radius: 15px;
+            border: 2px solid #ff4444;
+            box-shadow: 0 0 40px rgba(255, 68, 68, 0.6);
+            animation: lockGlow 2s ease-in-out infinite alternate;
         }
-        
-        .modes-grid {
+
+        @keyframes lockGlow {
+            0% { 
+                box-shadow: 0 0 40px rgba(255, 68, 68, 0.6);
+                text-shadow: 0 0 30px rgba(255, 68, 68, 1), 0 0 60px rgba(255, 68, 68, 0.8);
+            }
+            100% { 
+                box-shadow: 0 0 60px rgba(255, 68, 68, 0.9);
+                text-shadow: 0 0 40px rgba(255, 68, 68, 1), 0 0 80px rgba(255, 68, 68, 1);
+            }
+        }
+
+        .team-section {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
         }
-        
-        .mode-card {
-            background-color: var(--dark);
-            border-radius: 10px;
+
+        .team-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
+            border-radius: 20px;
+            padding: 40px;
+            border: 3px solid;
+            position: relative;
             overflow: hidden;
-            transition: transform 0.3s ease;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
         }
-        
-        .mode-card:hover {
+
+        .team-card:hover {
             transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(255, 68, 68, 0.4);
         }
-        
-        .mode-img {
-            height: 200px;
-            background-size: cover;
-            background-position: center;
+
+        .sun-team {
+            border-color: #ff4444;
+            box-shadow: 0 0 40px rgba(255, 68, 68, 0.4);
         }
-        
-        .mode-content {
-            padding: 1.5rem;
+
+        .sun-team:hover {
+            box-shadow: 0 30px 60px rgba(255, 68, 68, 0.6);
         }
-        
-        .mode-content h3 {
-            margin-bottom: 1rem;
-            color: var(--accent);
+
+        .moon-team {
+            border-color: #4499ff;
+            box-shadow: 0 0 40px rgba(68, 153, 255, 0.4);
         }
-        
-        footer {
-            background-color: var(--dark);
-            padding: 3rem 0;
+
+        .moon-team:hover {
+            box-shadow: 0 30px 60px rgba(68, 153, 255, 0.6);
+        }
+
+        .team-card h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
             text-align: center;
         }
-        
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 2rem;
+
+        .sun-team h3 {
+            color: #ff4444;
+            text-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
         }
-        
-        .footer-logo img {
-            height: 60px;
-            margin-bottom: 1rem;
+
+        .moon-team h3 {
+            color: #4499ff;
+            text-shadow: 0 0 20px rgba(68, 153, 255, 0.5);
         }
-        
-        .footer-links {
-            display: flex;
-            flex-direction: column;
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
         }
-        
-        .footer-links a {
-            color: var(--light);
-            text-decoration: none;
-            margin-bottom: 0.5rem;
-            transition: color 0.3s ease;
+
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            padding-left: 30px;
         }
-        
-        .footer-links a:hover {
-            color: var(--accent);
+
+        .feature-list li::before {
+            content: '⚡';
+            position: absolute;
+            left: 0;
+            color: #ff4444;
         }
-        
-        .social-links {
-            display: flex;
-            gap: 1rem;
+
+        .cta-section {
+            text-align: center;
+            padding: 80px 0;
+            background: linear-gradient(45deg, rgba(255, 68, 68, 0.3), rgba(68, 153, 255, 0.3));
+            border-radius: 25px;
+            margin: 50px 0;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
         }
-        
-        .social-links a {
-            color: var(--light);
-            font-size: 1.5rem;
-            transition: color 0.3s ease;
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 68, 68, 0.1) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+            z-index: -1;
         }
-        
-        .social-links a:hover {
-            color: var(--accent);
+
+        .cta-section h2 {
+            font-size: 3.5rem;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #ff4444, #4499ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255, 68, 68, 0.5);
         }
-        
-        .copyright {
-            margin-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 2rem;
+
+        .cta-section p {
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            color: #cccccc;
         }
-        
-        /* Copy button styles */
-        .copy-btn {
-            background: var(--accent);
-            border: none;
-            padding: 0.3rem 0.8rem;
-            border-radius: 4px;
+
+        .apply-btn {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff4444, #4499ff);
             color: white;
-            cursor: pointer;
-            font-size: 0.8rem;
-            margin-left: 0.5rem;
+            padding: 25px 60px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.6rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 15px 40px rgba(255, 68, 68, 0.4);
+            position: relative;
+            overflow: hidden;
         }
-        
-        .server-ip {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            display: inline-flex;
-            align-items: center;
-            margin: 1rem 0;
+
+        .apply-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shine 3s infinite;
+            z-index: 1;
         }
-        
-        /* Animation Effects */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+
+        @keyframes shine {
+            0% { transform: rotate(0deg) translateX(-100%); }
+            100% { transform: rotate(0deg) translateX(100%); }
         }
-        
-        .animate {
-            animation: fadeIn 0.8s ease forwards;
+
+        .apply-btn:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 25px 50px rgba(255, 68, 68, 0.6);
         }
-        
-        /* Media Queries */
-        @media screen and (max-width: 768px) {
-            .navbar {
-                padding: 0 1rem;
-            }
-            
-            .nav-links {
-                position: absolute;
-                right: 0;
-                top: 70px;
-                background-color: var(--secondary);
-                flex-direction: column;
-                width: 100%;
-                text-align: center;
-                transform: translateX(100%);
-                transition: transform 0.5s ease-in;
-                padding: 2rem 0;
-            }
-            
-            .nav-links li {
-                margin: 1rem 0;
-            }
-            
-            .hamburger {
-                display: block;
-            }
-            
-            .nav-active {
-                transform: translateX(0%);
-            }
-            
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .feature-card, .mode-card {
-                margin-bottom: 2rem;
-            }
-            
-            .step-number {
-                position: static;
-                margin: 0 auto 1rem;
-            }
-            
-            .footer-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .footer-logo, .footer-links, .social-links {
-                margin-bottom: 1.5rem;
-            }
+
+        .apply-btn span {
+            position: relative;
+            z-index: 2;
+        }
+
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 68, 68, 0.6);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .rule-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+            border-radius: 15px;
+            padding: 30px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rule-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(255, 68, 68, 0.2);
+            border-color: rgba(255, 68, 68, 0.5);
+        }
+
+        .rule-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(45deg, #ff4444, #4499ff);
+            border-radius: 15px 15px 0 0;
+        }
+
+        .rule-card h4 {
+            color: #4499ff;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            text-shadow: 0 0 15px rgba(68, 153, 255, 0.5);
+        }
+
+        .rule-card p {
+            color: #cccccc;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .team-section { grid-template-columns: 1fr; }
+            .blood-moon { width: 80px; height: 80px; }
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <div class="container">
-            <nav class="navbar">
-                <div class="logo">
-                    <img src="https://cdn.discordapp.com/attachments/1350260597756788736/1363688671739379882/ChatGPT_Image_Apr_10_2025_09_33_14_PM.png?ex=68079a4b&is=680648cb&hm=514b9e40a4c62a0108dfec056509c08a5bd5dfb60110b455a8b25292f84f89d4&" alt="Solstice SMP Logo">
-                    <h1>Solstice SMP</h1>
-                </div>
-                <ul class="nav-links">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#join">How to Join</a></li>
-                    <li><a href="#gamemodes">Game Modes</a></li>
-                    <li><a href="https://discord.gg/gJsW4gdc76" target="_blank">Discord</a></li>
-                </ul>
-                <div class="hamburger">
-                    <div class="line1"></div>
-                    <div class="line2"></div>
-                    <div class="line3"></div>
-                </div>
-            </nav>
-        </div>
-    </header>
+    <div class="stars"></div>
+    <div class="blood-moon"></div>
+    <div class="floating-particles"></div>
 
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <h1>Welcome to Solstice SMP</h1>
-            <p>A vanilla-friendly Minecraft server running on PaperMC with multiple game modes!</p>
-            <div class="server-status">
-                <a href="https://minecraftservers.org/server/672921" target="_blank"><img src="https://status.minecraftservers.org/classic/672921.png" alt="Solstice SMP Minecraft server"></a>
-            </div>
-            <div class="server-ip">
-                <span>play.solstice.quest</span>
-                <button class="copy-btn" onclick="copyToClipboard('play.solstice.quest')">Copy IP</button>
-            </div>
-            <a href="#join" class="btn btn-primary">How to Join</a>
-            <a href="https://discord.gg/gJsW4gdc76" class="btn btn-secondary" target="_blank">Join our Discord</a>
-        </div>
-    </section>
+    <div class="container">
+        <header>
+            <h1>SOLSTICE SMP</h1>
+            <p class="subtitle">☀️ Sun & Moon Aligned ☽</p>
+            <p>Where Divine Forces Clash in Epic Survival</p>
+        </header>
 
-    <section id="features" class="section features">
-        <div class="container">
-            <div class="section-header">
-                <h2>Server Features</h2>
-                <p>Discover what makes Solstice SMP special</p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-server"></i>
-                    </div>
-                    <h3>Vanilla-Friendly</h3>
-                    <p>Experience Minecraft as it was meant to be, with subtle enhancements for better gameplay</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-microphone"></i>
-                    </div>
-                    <h3>Proximity Voice Chat</h3>
-                    <p>Talk with nearby players using our integrated voice chat system</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-gamepad"></i>
-                    </div>
-                    <h3>Multiple Game Modes</h3>
-                    <p>From survival to minigames, there's something for everyone to enjoy</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3>Active Community</h3>
-                    <p>Join our friendly community of Minecraft enthusiasts</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3>Anti-Cheat Protection</h3>
-                    <p>Fair gameplay guaranteed with our advanced anti-cheat systems</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <h3>Optimized Performance</h3>
-                    <p>Enjoy smooth gameplay with minimal lag on our high-performance servers</p>
-                </div>
-            </div>
+        <div class="week-display">
+            <div class="current-week">Week 1: The Gathering</div>
+            <div class="countdown">Time until Week 2: <span id="countdown">0d 0h 0m 0s</span></div>
         </div>
-    </section>
 
-    <section id="join" class="section join-steps">
-        <div class="container">
-            <div class="section-header">
-                <h2>How to Join</h2>
-                <p>Follow these simple steps to join Solstice SMP</p>
+        <div class="admin-controls" id="adminControls" style="display: none;">
+            <h3>Admin Controls</h3>
+            <div>
+                <label>Current Week:</label>
+                <select id="weekSelect">
+                    <option value="1">Week 1: The Gathering</option>
+                    <option value="2">Week 2: The Shattering</option>
+                    <option value="3">Week 3: The Bloom</option>
+                    <option value="4">Week 4: Blood Moon</option>
+                </select>
+                <button onclick="updateWeek()">Update Week</button>
             </div>
-            <div class="step-container">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <h3>Install Minecraft</h3>
-                    <div class="step-content">
-                        <div>
-                            <h4>Option 1: Official Minecraft (Recommended)</h4>
-                            <ol>
-                                <li>Go to minecraft.net and purchase Minecraft Java Edition</li>
-                                <li>Download the Minecraft Launcher and install it</li>
-                                <li>Launch the game, log in, and proceed to Step 2</li>
-                            </ol>
-                        </div>
-                        <div>
-                            <h4>Option 2: TLauncher (Alternative Free Option)</h4>
-                            <ol>
-                                <li>Download TLauncher from tlauncher.org</li>
-                                <li>Install TLauncher and open it</li>
-                                <li>Click Accounts > Manage Accounts > Create an Account and enter your username</li>
-                                <li>Select Minecraft Version 1.21.4, then click Install & Play</li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <h3>Connect to the Server</h3>
-                    <div class="step-content">
-                        <div>
-                            <h4>Java Edition:</h4>
-                            <p>IP: <code>play.solstice.quest</code></p>
-                        </div>
-                        <div>
-                            <h4>Bedrock Edition:</h4>
-                            <p>IP: <code>nil</code></p>
-                            <p>Port: <code>1825</code></p>
-                        </div>
-                        <ol>
-                            <li>Open Minecraft (or TLauncher)</li>
-                            <li>Click Multiplayer > Add Server</li>
-                            <li>Enter the IP and click Done</li>
-                            <li>Join the server and start your adventure!</li>
-                        </ol>
-                    </div>
-                </div>
-                
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <h3>(Optional) Enable Proximity Voice Chat</h3>
-                    <div class="step-content">
-                        <p>Want to talk with nearby players? Install Simple Voice Chat mod for PaperMC:</p>
-                        <a href="https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat" class="btn btn-primary" target="_blank">Download Here</a>
-                        
-                        <h4>How to Install the Plugin (Client-Side)</h4>
-                        <ol>
-                            <li>Download the .jar file from the link above</li>
-                            <li>Install Fabric or Forge (TLauncher users can do this in the settings)</li>
-                            <li>Place the .jar file in your Minecraft mods folder:</li>
-                            <li><strong>Windows:</strong> Press Win + R, type %appdata%, and navigate to .minecraft/mods/</li>
-                            <li><strong>Mac:</strong> Open ~/Library/Application Support/minecraft/mods/</li>
-                            <li><strong>Linux:</strong> Go to ~/.minecraft/mods/</li>
-                            <li>Launch the game using Fabric/Forge</li>
-                            <li>Once in-game, press V to configure your voice settings</li>
-                        </ol>
-                    </div>
-                </div>
-                
-                <div class="step">
-                    <div class="step-number">4</div>
-                    <h3>Enjoy the Server!</h3>
-                    <div class="step-content">
-                        <p>If you have any issues, ask for help in #support channel on our Discord.</p>
-                        <a href="https://discord.gg/gJsW4gdc76" class="btn btn-primary" target="_blank">Join Discord</a>
-                    </div>
-                </div>
+            <div>
+                <label>Days into current week:</label>
+                <input type="number" id="dayInput" min="0" max="4" value="3">
+                <button onclick="updateCountdown()">Update Countdown</button>
+            </div>
+            <div>
+                <button onclick="toggleAdminMode()">Hide Admin Controls</button>
             </div>
         </div>
-    </section>
 
-    <section id="gamemodes" class="section game-modes">
-        <div class="container">
-            <div class="section-header">
-                <h2>Game Modes</h2>
-                <p>Explore the various game modes available on Solstice SMP</p>
-            </div>
-            <div class="modes-grid">
-                <div class="mode-card">
-                    <div class="mode-img" style="background-image: url('/api/placeholder/400/320');"></div>
-                    <div class="mode-content">
-                        <h3>Survival (SMP)</h3>
-                        <p>Our flagship vanilla-friendly survival experience. Build, explore, and thrive in a community-driven world.</p>
-                    </div>
+        <div class="section">
+            <h2>⚔️ Welcome to Solstice SMP</h2>
+            <p>Enter a world where the eternal struggle between Sun and Moon shapes every aspect of survival. This isn't just another SMP - it's a carefully crafted experience where your team alignment fundamentally changes how you play Minecraft.</p>
+            
+            <div class="team-section">
+                <div class="team-card sun-team">
+                    <h3>☀️ Sun Team</h3>
+                    <ul class="feature-list">
+                        <li>Dominate during daylight hours</li>
+                        <li>Auto-smelting and cooking abilities</li>
+                        <li>Heal near heat sources</li>
+                        <li>Wield the legendary Sun Blade</li>
+                        <li>Divine solar blessings</li>
+                    </ul>
                 </div>
-                <div class="mode-card">
-                    <div class="mode-img" style="background-image: url('/api/placeholder/400/320');"></div>
-                    <div class="mode-content">
-                        <h3>SkyBlock</h3>
-                        <p>Start with a small island in the sky and expand your territory through resource gathering and smart management.</p>
-                    </div>
-                </div>
-                <div class="mode-card">
-                    <div class="mode-img" style="background-image: url('/api/placeholder/400/320');"></div>
-                    <div class="mode-content">
-                        <h3>SkyWars</h3>
-                        <p>Battle against other players on floating islands. Gather resources, gear up, and be the last one standing!</p>
-                    </div>
-                </div>
-                <div class="mode-card">
-                    <div class="mode-img" style="background-image: url('/api/placeholder/400/320');"></div>
-                    <div class="mode-content">
-                        <h3>Survival Games</h3>
-                        <p>Compete in Hunger Games-style matches where strategy and combat skills determine the victor.</p>
-                    </div>
-                </div>
-                <div class="mode-card">
-                    <div class="mode-img" style="background-image: url('/api/placeholder/400/320');"></div>
-                    <div class="mode-content">
-                        <h3>Duels</h3>
-                        <p>Test your PvP skills in one-on-one combat arenas with various weapon loadouts and arenas.</p>
-                    </div>
+                <div class="team-card moon-team">
+                    <h3>☽ Moon Team</h3>
+                    <ul class="feature-list">
+                        <li>Become powerful during night</li>
+                        <li>Massive shadow combat bonuses</li>
+                        <li>Phantom Wings for aerial mobility</li>
+                        <li>Wield the mystical Moon Blade</li>
+                        <li>Divine lunar blessings</li>
+                    </ul>
                 </div>
             </div>
         </div>
-    </section>
 
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <img src="https://cdn.discordapp.com/attachments/1350260597756788736/1363688671739379882/ChatGPT_Image_Apr_10_2025_09_33_14_PM.png?ex=68079a4b&is=680648cb&hm=514b9e40a4c62a0108dfec056509c08a5bd5dfb60110b455a8b25292f84f89d4&" alt="Solstice SMP Logo">
-                    <p>Solstice SMP - A Minecraft Community</p>
+        <div class="section">
+            <h2>💀 The Three Life System</h2>
+            <p>Death has real consequences in Solstice SMP. You begin with three precious lives, and each death brings you closer to permanent exile. But death isn't the end - your soul becomes a powerful item that can be absorbed for team benefits or used to revive you on a different team.</p>
+            
+            <div class="rules-grid">
+                <div class="rule-card">
+                    <h4>Life Management</h4>
+                    <p>Track your remaining lives in the action bar. Every death counts, every life matters.</p>
                 </div>
-                <div class="footer-links">
-                    <h3>Quick Links</h3>
-                    <a href="#home">Home</a>
-                    <a href="#features">Features</a>
-                    <a href="#join">How to Join</a>
-                    <a href="#gamemodes">Game Modes</a>
+                <div class="rule-card">
+                    <h4>Soul Interaction</h4>
+                    <p>When players lose their final life, their soul becomes an interactive item with two powerful options.</p>
                 </div>
-                <div class="footer-links">
-                    <h3>Connect</h3>
-                    <a href="https://discord.gg/gJsW4gdc76" target="_blank">Discord</a>
-                    <a href="https://minecraftservers.org/server/672921" target="_blank">Server Listing</a>
+                <div class="rule-card">
+                    <h4>Divine Consequences</h4>
+                    <p>King deaths result in week-long team curses. Leadership has its risks.</p>
                 </div>
-                <div class="social-links">
-                    <a href="https://discord.gg/gJsW4gdc76" target="_blank"><i class="fab fa-discord"></i></a>
-                </div>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2025 Solstice SMP. All Rights Reserved.</p>
             </div>
         </div>
-    </footer>
+
+        <div class="section" id="week2" data-week="2">
+            <h2>🌋 Week 2: The Shattering</h2>
+            <p>Reality tears apart as the Nether dimension is unleashed upon the world. Witness the ground shake as five mystical portals manifest, granting access to the realm of fire and brimstone. Advanced materials and brewing become possible, fundamentally changing the server's progression.</p>
+            
+            <div class="rules-grid">
+                <div class="rule-card">
+                    <h4>Nether Access</h4>
+                    <p>Five portals spawn across the world, each defended by unique challenges.</p>
+                </div>
+                <div class="rule-card">
+                    <h4>Advanced Materials</h4>
+                    <p>Nether materials become available, enabling powerful enchantments and brewing.</p>
+                </div>
+                <div class="rule-card">
+                    <h4>Team Advantages</h4>
+                    <p>Each team gains unique benefits from Nether access based on their alignment.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="week3" data-week="3">
+            <h2>🌸 The Bloom</h2>
+            <p>Cherry blossom petals fill the air as mystical spores dance around every player. The End dimension opens its gates, revealing the endgame progression phase. Ancient powers awaken, and the final tier of challenges becomes accessible.</p>
+            
+            <div class="rules-grid">
+                <div class="rule-card">
+                    <h4>End Portal</h4>
+                    <p>A magical End portal structure appears, marking the beginning of endgame content.</p>
+                </div>
+                <div class="rule-card">
+                    <h4>Ancient Powers</h4>
+                    <p>Unlock the most powerful abilities and items in the game.</p>
+                </div>
+                <div class="rule-card">
+                    <h4>Final Challenges</h4>
+                    <p>Face ultimate trials that will test your team's coordination and skill.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="week4" data-week="4">
+            <h2>🩸 Week 4: Blood Moon</h2>
+            <p>The sky turns crimson as the ultimate battle royale begins. Two players are chosen by the gods to become temporary kings with doubled health, divine resistances, and access to legendary weapons. When kings fall, their teams face devastating week-long curses.</p>
+            
+            <div class="rules-grid">
+                <div class="rule-card">
+                    <h4>Divine Kings</h4>
+                    <p>Chosen players receive 40 hearts, resistances, and legendary weapon access.</p>
+                </div>
+                <div class="rule-card">
+                    <h4>Ultimate Stakes</h4>
+                    <p>King deaths result in team-wide weakness and slowness for an entire week.</p>
+                </div>
+                <div class="rule-card">
+                    <h4>Legendary Combat</h4>
+                    <p>Witness the most intense PvP battles as divine powers clash.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🎯 Server Features</h2>
+            <div class="rules-grid">
+                <div class="rule-card">
+                    <h4>Proximity Chat</h4>
+                    <p>Distance-based communication system that affects message clarity and team coordination.</p>
+                </div>
+                <div class="rule-card">
+                    <h4>Divine Blessings</h4>
+                    <p>Powerful permanent effects granted through mystical Prophecy Scrolls.</p>
+                </div>
+                <div class="rule-card">
+                    <h4>Automatic Events</h4>
+                    <p>Starfall treasure hunts and divine sacrifice rituals occur randomly.</p>
+                </div>
+                <div class="rule-card">
+                    <h4>Enhanced Mining</h4>
+                    <p>Bonus ore drops with spectacular visual effects and celebratory sounds.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h2>Ready to Choose Your Side?</h2>
+            <p>Applications are now open for dedicated players ready to experience the ultimate survival challenge.</p>
+            <a href="https://discord.gg/r2W59TWvQu" class="apply-btn"><span>Apply Now on Discord</span></a>
+        </div>
+    </div>
 
     <script>
-        // Mobile Nav Toggle
-        const hamburger = document.querySelector('.hamburger');
-        const navLinks = document.querySelector('.nav-links');
+        // Admin password
+        const ADMIN_PASSWORD = 'solstice2024';
+        let isAdminMode = false;
         
-        hamburger.addEventListener('click', () => {
-            navLinks.classList.toggle('nav-active');
+        // Week data
+        let currentWeek = 1;
+        let dayInWeek = 3; // Currently day 3 of week 1
+        const WEEK_LENGTH = 4; // 4 days per week
+        
+        // Week names
+        const weekNames = {
+            1: "Week 1: The Gathering",
+            2: "Week 2: The Shattering", 
+            3: "Week 3: The Bloom",
+            4: "Week 4: Blood Moon"
+        };
+
+        // Initialize the page
+        function initializePage() {
+            createStars();
+            createFloatingParticles();
+            updateWeekDisplay();
+            updateCountdown();
+            lockSections();
             
-            // Hamburger Animation
-            hamburger.classList.toggle('toggle');
-        });
-        
-        // Smooth Scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                const targetElement = document.querySelector(targetId);
-                
-                window.scrollTo({
-                    top: targetElement.offsetTop - 100,
-                    behavior: 'smooth'
-                });
-                
-                // Close mobile nav if open
-                navLinks.classList.remove('nav-active');
-            });
-        });
-        
-        // Animation on Scroll
-        const animateOnScroll = () => {
-            const elements = document.querySelectorAll('.feature-card, .step, .mode-card, .section-header');
+            // Check for admin mode in URL
+            if (window.location.hash === '#admin') {
+                promptAdminLogin();
+            }
+        }
+
+        // Create animated stars
+        function createStars() {
+            const starsContainer = document.querySelector('.stars');
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Create floating particles
+        function createFloatingParticles() {
+            const particlesContainer = document.querySelector('.floating-particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                if (Math.random() > 0.5) {
+                    particle.style.background = 'rgba(68, 153, 255, 0.6)';
+                }
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Update week display
+        function updateWeekDisplay() {
+            const weekDisplay = document.querySelector('.current-week');
+            weekDisplay.textContent = weekNames[currentWeek];
+        }
+
+        // Update countdown timer
+        function updateCountdown() {
+            const countdownElement = document.getElementById('countdown');
             
-            elements.forEach(element => {
-                const elementPosition = element.getBoundingClientRect().top;
-                const screenPosition = window.innerHeight / 1.3;
+            function updateTimer() {
+                const now = new Date();
+                const daysLeft = WEEK_LENGTH - dayInWeek;
+                const hoursLeft = 23 - now.getHours();
+                const minutesLeft = 59 - now.getMinutes();
+                const secondsLeft = 59 - now.getSeconds();
                 
-                if (elementPosition < screenPosition) {
-                    element.classList.add('animate');
+                countdownElement.textContent = `${daysLeft}d ${hoursLeft}h ${minutesLeft}m ${secondsLeft}s`;
+            }
+            
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        }
+
+        // Lock sections based on current week
+        function lockSections() {
+            const sections = document.querySelectorAll('[data-week]');
+            sections.forEach(section => {
+                const sectionWeek = parseInt(section.getAttribute('data-week'));
+                if (sectionWeek > currentWeek) {
+                    section.classList.add('locked');
+                } else {
+                    section.classList.remove('locked');
                 }
             });
-        };
-        
-        window.addEventListener('scroll', animateOnScroll);
-        window.addEventListener('load', animateOnScroll);
-        
-        // Copy IP to clipboard
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                const copyBtn = document.querySelector('.copy-btn');
-                copyBtn.textContent = 'Copied!';
-                
-                setTimeout(() => {
-                    copyBtn.textContent = 'Copy IP';
-                }, 2000);
-            });
         }
+
+        // Admin functions
+        function promptAdminLogin() {
+            const password = prompt('Enter admin password:');
+            if (password === ADMIN_PASSWORD) {
+                isAdminMode = true;
+                document.getElementById('adminControls').style.display = 'block';
+                document.getElementById('weekSelect').value = currentWeek;
+                document.getElementById('dayInput').value = dayInWeek;
+            }
+        }
+
+        function toggleAdminMode() {
+            if (isAdminMode) {
+                document.getElementById('adminControls').style.display = 'none';
+                isAdminMode = false;
+                window.location.hash = '';
+            } else {
+                promptAdminLogin();
+            }
+        }
+
+        function updateWeek() {
+            if (!isAdminMode) return;
+            
+            const newWeek = parseInt(document.getElementById('weekSelect').value);
+            currentWeek = newWeek;
+            updateWeekDisplay();
+            lockSections();
+        }
+
+        function updateCountdown() {
+            if (!isAdminMode) return;
+            
+            dayInWeek = parseInt(document.getElementById('dayInput').value);
+            updateCountdown();
+        }
+
+        // Handle admin access via key combination
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                promptAdminLogin();
+            }
+        });
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', initializePage);
     </script>
 </body>
 </html>
